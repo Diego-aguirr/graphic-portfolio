@@ -1,7 +1,6 @@
 export const revalidate = 60;
 import BackToAdminButton from "@components/BackToAdminButton";
-import CategoryNav from "@components/CategoryNav";
-import { DesignCard } from "@components/DesignCard";
+import DesignGrid from "@components/DesignGrid";
 import { WhatsappButton } from "@components/WhatAppButton";
 import { getImages } from "@/app/actions/images";
 import { Metadata } from "next";
@@ -33,30 +32,9 @@ export default async function DesignsPage() {
         </div>
       </section>
       <BackToAdminButton />
-      {/* Navegación de Categorías */}
-      <section className="bg-white sticky top-16 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <CategoryNav />
-        </div>
-      </section>
 
-      {/* Grid de Diseños */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-          {images.map((img) => (
-            <DesignCard
-              key={img.id}
-              design={{
-                id: img.id,
-                category: img.category,
-                title: img.description,
-                image: img.url,
-                tags: [],
-              }}
-            />
-          ))}
-        </div>
-      </section>
+      {/* Filtro + Grid (client-side) */}
+      <DesignGrid images={images} />
 
       {/* CTA Final */}
       <section className="bg-gray-50 py-20">

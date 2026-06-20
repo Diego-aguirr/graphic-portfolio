@@ -1,177 +1,84 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@lib/supabase/client";
-
-const supabase = createClient();
+import { useState } from "react";
+import { loginAction } from "@/app/actions/auth";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [info, setInfo] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
     setError("");
-    setInfo("");
-    setIsLoading(true);
 
+    const formData = new FormData(e.currentTarget);
+    
     try {
-      const { data: loginData, error: loginErr } =
-        await supabase.auth.signInWithPassword({ email, password });
-
-      let user = loginData.user;
-
-      if (loginErr || !user) {
-        // Verificar si hay admins
-        const { data: admins } = await supabase
-          .from("admin_profiles")
-          .select("id");
-
-        if (!admins || admins.length === 0) {
-          setInfo("Registrando como primer administrador...");
-
-          const { data: signUpData, error: signUpErr } =
-            await supabase.auth.signUp({ email, password });
-
-          if (signUpErr || !signUpData.user) throw signUpErr;
-
-          user = signUpData.user;
-
-          // 🔹 Validación segura para evitar undefined
-          if (!user.id) throw new Error("El usuario no tiene un ID válido");
-
-          await supabase.from("admin_profiles").insert({
-            id: user.id,
-            email: user.email ?? "",
-          });
-
-          // Reintentar login
-          const { error: reloginErr, data: reloginData } =
-            await supabase.auth.signInWithPassword({ email, password });
-
-          if (reloginErr || !reloginData.user) throw reloginErr;
-
-          user = reloginData.user;
-        } else {
-          throw loginErr;
-        }
+      const result = await loginAction(null, formData);
+      if (result.success) {
+        router.push("/admin/dashboard");
+      } else if (result.error) {
+        setError(result.error);
       }
-
-      // 🔹 Segunda validación por seguridad
-      if (!user?.id) throw new Error("El usuario no tiene un ID válido");
-
-      const { data: profile, error: profErr } = await supabase
-        .from("admin_profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (profErr || !profile) {
-        await supabase.auth.signOut();
-        throw new Error("No tienes permisos de administrador");
-      }
-
-      router.push("/dashboard");
-      router.refresh();
-    } catch (err) {
-      setError((err as Error).message || "Error de autenticación");
+    } catch {
+      setError("An error occurred");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  };
-
-  const handlePasswordReset = async () => {
-    setError("");
-    setInfo("");
-
-    if (!email) {
-      setError("Por favor, ingresa tu correo electrónico");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const { error: resetErr } =
-        await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/update-password`,
-        });
-
-      if (resetErr) throw resetErr;
-
-      setInfo("Revisa tu correo para restablecer la contraseña.");
-    } catch (err) {
-      setError((err as Error).message || "Error de autenticación");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }
 
   return (
-    <form onSubmit={handleLogin} className="space-y-6 max-w-md mx-auto p-6">
-      {/* Email */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Correo electrónico
-          <span className="text-red-500 ml-1">*</span>
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
-          required
-          placeholder="tucorreo@ejemplo.com"
-          autoComplete="email"
-        />
-      </div>
-
-      {/* Contraseña */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Contraseña
-          <span className="text-red-500 ml-1">*</span>
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
-          required
-          placeholder="********"
-          autoComplete="current-password"
-        />
-      </div>
-
-      {/* Mensajes */}
-      {error && (
-        <p className="text-red-500 text-sm text-center font-medium">{error}</p>
-      )}
-      {info && (
-        <p className="text-teal-600 text-sm text-center font-medium">{info}</p>
-      )}
-
-      {/* Botón */}
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-gradient-to-r from-teal-600 to-teal-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-teal-700 hover:to-teal-600 focus:ring-2 focus:ring-teal-500 transition-all disabled:opacity-50"
-      >
-        {isLoading ? "Procesando..." : "Ingresar"}
-      </button>
-
-      {/* Recuperar contraseña */}
-      <p
-        onClick={handlePasswordReset}
-        className="text-center text-sm text-teal-600 hover:underline cursor-pointer select-none"
-      >
-        ¿Olvidaste tu contraseña?
+    <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold text-center mb-6">Admin Login</h1>
+      
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+        
+        <div>
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            Username
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+        
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+        
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+        >
+          {loading ? "Signing in..." : "Sign in"}
+        </button>
+      </form>
+      
+      <p className="mt-4 text-xs text-gray-500 text-center">
+        Demo: admin / admin123
       </p>
-    </form>
+    </div>
   );
 }

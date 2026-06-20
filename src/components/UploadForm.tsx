@@ -1,124 +1,83 @@
 "use client";
 
-import { useState } from "react";
- 
-import { uploadImage } from "@lib/helper/upload-image";
-import { imageEvents } from "@lib/events/imgEvent";
-import { createClient } from "@lib/supabase/client";
+import { createImage } from "@/app/actions/images";
+import { useRouter } from "next/navigation";
 
-const supabase = createClient();
+interface UploadFormProps {
+  onSuccess: () => void;
+}
 
-const categories = ["Branding", "Digital", "Impresión", "Eventos", "Packaging"];
+export default function UploadForm({ onSuccess }: UploadFormProps) {
+  const router = useRouter();
 
-export default function UploadForm() {
-  const [image, setImage] = useState<File | null>(null);
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage("");
-    setLoading(true);
+  async function handleSubmit(formData: FormData) {
+    const data = {
+      url: formData.get("url") as string,
+      description: formData.get("description") as string,
+      category: formData.get("category") as string,
+    };
 
     try {
-      if (!image) {
-        setMessage("Por favor selecciona una imagen.");
-        setLoading(false);
-        return;
-      }
-
-      // Subir imagen a Supabase Storage
-      const publicUrl = await uploadImage(image);
-
-      // Guardar en tabla 'images'
-      const { error } = await supabase.from("images").insert({
-        url: publicUrl,
-        description,
-        category,
-      });
-
-      if (error) throw error;
-
-      setMessage("Imagen subida exitosamente 🎉");
-
-      // Notificamos al resto que se subió una imagen nueva
-      imageEvents.dispatch();
-
-      // Limpiar campos
-      setImage(null);
-      setDescription("");
-      setCategory("");
-    } catch (err) {
-      if (err instanceof Error) {
-        setMessage("Error al subir la imagen: " + err.message);
-      } else {
-        setMessage("Error al subir la imagen");
-      }
-    } finally {
-      setLoading(false);
+      await createImage(data);
+      onSuccess();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Error al crear imagen");
     }
-  };
+  }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-2xl shadow-xl p-6 md:p-8 lg:p-10 space-y-6"
-    >
-      <h2 className="text-2xl font-semibold text-gray-800">Subir Imagen</h2>
+    <form action={handleSubmit} className="bg-white rounded-2xl shadow-xl p-6 md:p-8 lg:p-10 space-y-6">
+      <h3 className="text-2xl font-semibold text-gray-800">Nueva Imagen</h3>
 
-      {message && <p className="text-center text-sm text-teal-600">{message}</p>}
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Imagen <span className="text-red-500">*</span>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          URL de la imagen
         </label>
-        <input
-          type="file"
-          accept="image/*"
-          required
-          onChange={(e) => setImage(e.target.files?.[0] || null)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">Descripción</label>
         <input
           type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          name="url"
+          required
+          placeholder="/img/design1.jpg"
           className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-          placeholder="Ej: Diseño para CV moderno"
         />
       </div>
 
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Categoría <span className="text-red-500">*</span>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Descripción
+        </label>
+        <input
+          type="text"
+          name="description"
+          required
+          placeholder="Logo minimalista para TechStartup"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Categoría
         </label>
         <select
+          name="category"
           required
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg"
         >
-          <option value="">Selecciona una categoría</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
+          <option value="">Seleccionar categoría</option>
+          <option value="branding">Branding</option>
+          <option value="digital">Digital</option>
+          <option value="impresion">Impresión</option>
+          <option value="eventos">Eventos</option>
+          <option value="packaging">Packaging</option>
         </select>
       </div>
 
       <button
         type="submit"
-        disabled={loading}
         className="w-full bg-gradient-to-r from-teal-600 to-teal-500 text-white font-semibold py-3 px-6 rounded-lg hover:from-teal-700 hover:to-teal-600 transition-all disabled:opacity-50"
       >
-        {loading ? "Subiendo..." : "Subir imagen"}
+        Guardar Imagen
       </button>
     </form>
   );

@@ -3,12 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FiMenu, FiX } from "react-icons/fi";
-type Props = {
-  isAdmin: boolean;
-};
 
-
-export default function Sidebar({ isAdmin }: Props) {
+export default function Sidebar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Cerrar menú al redimensionar en pantallas grandes
@@ -111,17 +107,6 @@ export default function Sidebar({ isAdmin }: Props) {
                       Contáctanos
                     </Link>
                   </li>
-                  {isAdmin && (
-                    <li>
-                      <Link
-                        href="/login"
-                        className={linkClass}
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Ingresar
-                      </Link>
-                    </li>
-                  )}
                 </ul>
               </nav>
             </div>
@@ -130,6 +115,4 @@ export default function Sidebar({ isAdmin }: Props) {
       )}
     </div>
   );
-};
-
-
+}

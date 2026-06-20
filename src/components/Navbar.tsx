@@ -2,13 +2,8 @@
 
 import Link from "next/link";
 import Sidebar from "./Sidebar";
-import { FiUser } from "react-icons/fi";
 
-type Props = {
-  isAdmin: boolean;
-};
-
-export default function Navbar({ isAdmin }: Props) {
+export default function Navbar() {
   return (
     <header className="bg-white py-4 px-6 md:py-6 md:px-8 flex justify-between items-center shadow-md fixed w-full z-50">
       {/* Logo   */}
@@ -71,17 +66,7 @@ export default function Navbar({ isAdmin }: Props) {
         </ul>
       </nav>
 
-      {isAdmin && (
-        <Link
-          href="/login"
-          className="p-2 text-gray-600 hover:text-teal-500 transition-colors hidden md:inline-flex"
-          aria-label="Iniciar sesión"
-        >
-          <FiUser className="w-6 h-6" />
-        </Link>
-      )}
-
-      <Sidebar isAdmin={isAdmin} />
+      <Sidebar />
     </header>
   );
 }

@@ -1,6 +1,6 @@
 export interface DesignCardProps {
   design: {
-    id: number;
+    id: string;
     category: string;
     title: string;
     image: string;

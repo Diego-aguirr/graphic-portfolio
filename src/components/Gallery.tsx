@@ -3,17 +3,13 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-// Importa tus imágenes aquí
-import design1 from "../../public/img/logo.jpg";
-import design2 from "../../public/img/logo.jpg";
-import design3 from "../../public/img/logo.jpg";
-
 const Gallery = () => {
   const designs = [
-    { id: 1, src: design1, alt: "Diseño 1" },
-    { id: 2, src: design2, alt: "Diseño 2" },
-    { id: 3, src: design3, alt: "Diseño 3" },
-    // Agrega más diseños aquí
+    { id: 1, src: "/imgshow/Branding.jpg", alt: "Branding" },
+    { id: 2, src: "/imgshow/digital1.jpeg", alt: "Digital" },
+    { id: 3, src: "/imgshow/Eventos.jpg", alt: "Eventos" },
+    { id: 4, src: "/imgshow/Impresión.jpeg", alt: "Impresión" },
+    { id: 5, src: "/imgshow/Packaging.jpg", alt: "Packaging" },
   ];
 
   const sliderRef = useRef<HTMLDivElement>(null);

@@ -2,7 +2,7 @@
 // app/category/[category]/page.tsx
 
 import { DesignCard } from "@components/DesignCard";
-import { fetchPublicImages } from "@lib/fetchImg";
+import { getImages } from "@/app/actions/images";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import CategoryNav from "@components/CategoryNav";
@@ -64,7 +64,7 @@ export default async function CategoryPage({ params }: Props) {
   const categoryData = CATEGORY_MAP[categoryKey];
   const categoryName = categoryData.name;
 
-  const allImages = await fetchPublicImages();
+  const allImages = await getImages();
 
   const images = allImages.filter(img => {
     const imgCategoryNormalized = normalizeCategory(img.category);
@@ -100,7 +100,7 @@ export default async function CategoryPage({ params }: Props) {
             <DesignCard
               key={`${img.id}-${categorySlug}`}
               design={{
-                id: Number(img.id),
+                id: img.id,
                 category: img.category,
                 title: img.description,
                 image: img.url,

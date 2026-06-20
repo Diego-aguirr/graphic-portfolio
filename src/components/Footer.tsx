@@ -1,5 +1,6 @@
 import React from "react";
-import { FaInstagram } from "react-icons/fa";
+import Link from "next/link";
+import { FaInstagram, FaCog } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -12,7 +13,7 @@ const Footer = () => {
             reservados.
           </p>
 
-          <div className="order-1">
+          <div className="order-1 flex items-center gap-4">
             <a
               href="https://www.instagram.com" // Reemplaza con tu URL
               target="_blank"
@@ -21,6 +22,14 @@ const Footer = () => {
             >
               <FaInstagram size={32} className="shrink-0" />
             </a>
+            
+            <Link
+              href="/login"
+              className="text-gray-400 hover:text-gray-600 transition-colors duration-300"
+              title="Admin"
+            >
+              <FaCog size={20} className="shrink-0" />
+            </Link>
           </div>
         </div>
 

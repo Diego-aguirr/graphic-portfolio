@@ -3,7 +3,7 @@ import BackToAdminButton from "@components/BackToAdminButton";
 import CategoryNav from "@components/CategoryNav";
 import { DesignCard } from "@components/DesignCard";
 import { WhatsappButton } from "@components/WhatAppButton";
-import { fetchPublicImages } from "@lib/fetchImg";
+import { getImages } from "@/app/actions/images";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DesignsPage() {
-  const images = await fetchPublicImages();
+  const images = await getImages();
 
   return (
     <main className="min-h-screen">
@@ -47,7 +47,7 @@ export default async function DesignsPage() {
             <DesignCard
               key={img.id}
               design={{
-                id: Number(img.id),
+                id: img.id,
                 category: img.category,
                 title: img.description,
                 image: img.url,

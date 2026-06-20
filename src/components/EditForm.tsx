@@ -1,7 +1,6 @@
 "use client";
 
 import { updateImage } from "@/app/actions/images";
-import { useRouter } from "next/navigation";
 
 interface EditFormProps {
   image: {
@@ -15,8 +14,6 @@ interface EditFormProps {
 }
 
 export default function EditForm({ image, onSuccess, onCancel }: EditFormProps) {
-  const router = useRouter();
-
   async function handleSubmit(formData: FormData) {
     const data = {
       description: formData.get("description") as string,

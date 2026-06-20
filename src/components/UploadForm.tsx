@@ -1,15 +1,12 @@
 "use client";
 
 import { createImage } from "@/app/actions/images";
-import { useRouter } from "next/navigation";
 
 interface UploadFormProps {
   onSuccess: () => void;
 }
 
 export default function UploadForm({ onSuccess }: UploadFormProps) {
-  const router = useRouter();
-
   async function handleSubmit(formData: FormData) {
     const data = {
       url: formData.get("url") as string,

@@ -1,90 +1,107 @@
-🎨 Grafic – Portafolio de Diseño Gráfico
+# Grafic — Portafolio de Diseño Gráfico
 
-Grafic es una plataforma profesional creada con Next.js 15, TypeScript y Tailwind CSS. Permite a diseñadores gráficos mostrar sus trabajos, conectar con clientes y gestionar contenido desde un panel de administración.
+Portfolio profesional para demo. Next.js 15 + React 19 + Tailwind CSS.
 
-🚀 Características
+## Demo
 
-✅ Portafolio dinámico con imágenes categorizadas
+Accedé en: https://grafic-studio.vercel.app/
 
-✅ Panel de administración seguro con Supabase Auth
+## Características
 
-✅ Contacto directo vía WhatsApp
+- **Home** con hero, servicios y preview del portafolio
+- **Galería de diseños** con filtros por categoría (client-side)
+- **Formulario de contacto** con EmailJS (o demo mode)
+- **Panel de administración** con login JWT y CRUD de imágenes
+- **Responsive** — mobile, tablet, desktop
+- **SEO** — metadata optimizada en cada página
 
-✅ Optimizado para SEO y rendimiento
+## Stack técnico
 
-✅ Diseño moderno, responsive y profesional
+| Capa | Tecnología |
+|------|-----------|
+| Framework | Next.js 15.5 (App Router, Turbopack) |
+| UI | React 19, Tailwind CSS 4, Framer Motion |
+| Language | TypeScript 5 (strict) |
+| Auth | JWT en cookies httpOnly |
+| Email | @emailjs/browser |
+| Package Manager | pnpm |
 
-🛠️ Tecnologías Usadas
+## Inicio rápido
 
-Next.js 15
+```bash
+# Instalar dependencias
+pnpm install
 
-TypeScript
+# Variables de entorno
+cp .env.example .env
+# Editar JWT_SECRET con un valor seguro
 
-Tailwind CSS
+# Desarrollo
+pnpm dev
 
-Supabase
+# Build producción
+pnpm build && pnpm start
+```
 
-Vercel
+## Estructura del proyecto
 
-
-
-🌐 SEO y Etiquetas Meta
-
-El proyecto incluye etiquetas meta para mejorar posicionamiento:
-
-<meta name="title" content="CraftyCraft17 - Portafolio de Diseño Gráfico Profesional">
-<meta name="description" content="Portafolio moderno de diseño gráfico. Logos, branding, flyers, CVs y más. Contacta directo por WhatsApp.">
-<meta name="keywords" content="diseño gráfico, branding, logos, flyers, diseño web, ilustraciones, portafolio, diseño moderno">
-<meta property="og:title" content="CraftyCraft17 - Diseño Gráfico Profesional">
-<meta property="og:description" content="Explora nuestro portafolio de diseño gráfico: logos, branding, flyers, CVs y más.">
-<meta property="og:image" content="/og-image.png">
-<meta property="og:url" content="https://craftycraft17.com">
-<meta name="twitter:card" content="summary_large_image">
-
-
-
-
-Accede en  https://grafic-studio.vercel.app/
-
-
-
-
-📂 Estructura del Proyecto 
-  ```text
-   grafic/
-├── .gitignore
-├── next.config.ts
-├── package.json
-├── postcss.config.mjs
-├── README.md
-├── tsconfig.json
-├── public/
-│ ├── favicon.ico
-│ └── img/
-├── src/
+```
+src/
 ├── app/
-│ ├── (admin)/
-│ │ └── dashboard/
-│ ├── (marketing)/
-│ │ ├── aboutus/
-│ │ ├── contacform/
-│ │ └── ourdesigns/
-│ │ └── [category]/
-│ ├── api/
-│ ├── login/
-│ └── update-password/
-├── components/
-│ ├── ui/
-│ ├── Navbar.tsx
-│ ├── Footer.tsx
-│ └── Sidebar.tsx
-├── interfaces/
-└── lib/
-├── events/
-├── helper/
-└── supabase/
- 
+│   ├── (marketing)/        # Rutas públicas
+│   │   ├── page.tsx              # Home
+│   │   ├── aboutus/page.tsx      # Quienes Somos
+│   │   ├── ourdesigns/page.tsx   # Galería
+│   │   └── contacform/page.tsx   # Contacto
+│   ├── admin/
+│   │   ├── layout.tsx            # Protección JWT
+│   │   └── dashboard/page.tsx    # Dashboard
+│   ├── login/page.tsx            # Login
+│   ├── actions/                  # Server Actions
+│   └── layout.tsx                # Root layout
+├── components/                   # Componentes React
+├── interfaces/                   # Tipos TypeScript
+├── lib/auth.ts                   # JWT auth
+├── services/data/                # Datos hardcodeados
+└── middleware.ts                  # Protección de rutas
+```
 
+## Admin
 
- 
+- **URL**: `/login`
+- **Credenciales**: admin / (ver `.env`)
+- **Funciones**: ver, crear, editar, eliminar imágenes
+- **Nota**: las imágenes son in-memory (se pierden al reiniciar)
 
+## Variables de entorno
+
+| Variable | Requerida | Descripción |
+|----------|-----------|-------------|
+| `JWT_SECRET` | Sí | Clave para firmar JWT |
+| `ADMIN_USER` | Sí | Usuario admin |
+| `ADMIN_PASSWORD` | Sí | Contraseña admin |
+| `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` | No | EmailJS public key |
+| `NEXT_PUBLIC_EMAILJS_SERVICE_ID` | No | EmailJS service ID |
+| `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID` | No | EmailJS template ID |
+
+## Deployment
+
+Este proyecto está optimizado para **Vercel**:
+
+1. Conectar el repo de GitHub
+2. Configurar variables de entorno en Vercel
+3. Deploy automático en cada push
+
+No necesita base de datos ni servicios externos.
+
+## Limitaciones conocidas
+
+- Credenciales de admin hardcodeadas
+- Imágenes in-memory (no persisten entre reinicios)
+- Sin tests automatizados
+- Sin rate limiting
+- EmailJS en demo mode sin configuración
+
+## Licencia
+
+Proyecto privado. Uso exclusivo del autor.

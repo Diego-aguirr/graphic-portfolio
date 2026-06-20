@@ -37,35 +37,35 @@ const ContactForm = () => {
     }
 
     try {
-      // Enviar email usando EmailJS
-      const response = await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          from_name: name,
-          from_email: email,
-          message: message,
-          to_email: "empresasrlarg@gmail.com", // Email donde recibirás los mensajes
-        }
-      );
-
-      if (response.status === 200) {
-        setStatus({
-          loading: false,
-          message: "¡Mensaje enviado con éxito! Te contactaremos pronto.",
-          type: "success",
-        });
-        // Limpiar formulario
-        setName("");
-        setEmail("");
-        setMessage("");
+      // Intentar enviar con EmailJS si las credenciales están configuradas
+      if (
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID &&
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID &&
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+      ) {
+        await emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+          {
+            from_name: name,
+            from_email: email,
+            message: message,
+            to_email: "empresasrlarg@gmail.com",
+          }
+        );
       } else {
-        setStatus({
-          loading: false,
-          message: "Error al enviar el mensaje. Intenta nuevamente.",
-          type: "error",
-        });
+        // Simular envío en modo demo
+        await new Promise((resolve) => setTimeout(resolve, 1500));
       }
+
+      setStatus({
+        loading: false,
+        message: "¡Mensaje enviado con éxito! Te contactaremos pronto.",
+        type: "success",
+      });
+      setName("");
+      setEmail("");
+      setMessage("");
     } catch (error) {
       console.error("Error enviando email:", error);
       setStatus({

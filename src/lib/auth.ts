@@ -6,10 +6,9 @@ export interface User {
   username: string;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-key-change-in-production";
-
-const ADMIN_USER: User = { id: "1", username: "admin" };
-const ADMIN_PASSWORD = "admin123";
+const JWT_SECRET = process.env.JWT_SECRET || "change-me-in-production";
+const ADMIN_USER: User = { id: "1", username: process.env.ADMIN_USER || "admin" };
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "change-me";
 
 export async function login(username: string, password: string): Promise<User | null> {
   if (username === ADMIN_USER.username && password === ADMIN_PASSWORD) {

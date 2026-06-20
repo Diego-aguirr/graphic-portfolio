@@ -77,7 +77,7 @@ export default function LoginForm() {
       </form>
       
       <p className="mt-4 text-xs text-gray-500 text-center">
-        Demo: admin / admin123
+        Demo: admin / Grafic2026!
       </p>
     </div>
   );

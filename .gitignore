@@ -31,13 +31,28 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (MUY IMPORTANTE: NO SUBIR KEYS)
-/.env
-.env*
+.env
 .env.local
 .env.*.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# AI dev tools
+.cursor/
+.cursorignore
+.copilot/
+.copilotignore
+.vscode/copilot/
+.idea/
+.windsurfrules
+.aider*
+.claude/
+.claudeignore
+opencode.json
+opencode.jsonc
+.atl/
+.playwright-mcp/
 
 # vercel
 .vercel
@@ -45,3 +60,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.vscode/

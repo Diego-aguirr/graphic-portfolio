@@ -1,5 +1,4 @@
 export const revalidate = 60;
-import BackToAdminButton from "@components/BackToAdminButton";
 import DesignGrid from "@components/DesignGrid";
 import { WhatsappButton } from "@components/WhatAppButton";
 import { getImages } from "@/app/actions/images";
@@ -31,7 +30,6 @@ export default async function DesignsPage() {
           </p>
         </div>
       </section>
-      <BackToAdminButton />
 
       {/* Filtro + Grid (client-side) */}
       <DesignGrid images={images} />
